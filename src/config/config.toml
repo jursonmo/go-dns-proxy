@@ -1,0 +1,19 @@
+[dns]
+listen_addr = ":53"
+upper=["114.114.114.114:53"]
+concurrency = 10
+queue_size = 20
+
+[policy]
+path="/etc/dnsmasq.d/"
+files=["policy.conf"]
+
+[cache]
+cap=10000
+interval=60
+ttl=300
+
+[log]
+max_day=3
+path="./console.log"
+level="debug"
