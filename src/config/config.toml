@@ -4,11 +4,13 @@ upper=["114.114.114.114:53"]
 concurrency = 10
 queue_size = 20
 
+//load config file, like dnsmasq, load all files in ${path}, $path default is "/etc/dnsmasq.d/"
 [policy]
 path="/etc/dnsmasq.d/"
 files=["policy.conf"]
 
 [cache]
+enable=true
 cap=10000
 interval=60
 ttl=300

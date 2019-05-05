@@ -13,6 +13,7 @@ var (
 )
 
 type CacheConfig struct {
+	Enable	bool `toml:enable`
 	Cap      int `toml:"cap"`
 	TTL      int `toml:"ttl"`
 	Interval int `toml:"interval"`

@@ -17,7 +17,7 @@ func Main(path string) {
 	logs.Info("load config: %s", conf.String())
 
 	var cache *Cache = nil
-	if conf.Cache != nil {
+	if conf.Cache != nil && conf.Cache.Enable{
 		cache = NewCache(conf.Cache)
 	}
 
