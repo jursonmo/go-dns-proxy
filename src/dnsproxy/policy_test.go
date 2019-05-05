@@ -53,7 +53,7 @@ func TestLoadIpset(t *testing.T) {
 		},
 	} {
 		p.loadline(c.in)
-		ele, err := p.tree.FindDomain(c.domain)
+		ele, err := p.FindDomain(c.domain)
 		if err != nil {
 			t.Errorf("can not get domain %s value\n", c.domain)
 			return
@@ -89,7 +89,7 @@ func TestLoadScript(t *testing.T) {
 		},
 	} {
 		p.loadline(c.in)
-		ele, err := p.tree.FindDomain(c.domain)
+		ele, err := p.FindDomain(c.domain)
 		if err != nil {
 			t.Errorf("can not get domain %s value\n", c.domain)
 			return
@@ -138,5 +138,26 @@ func TestLoadAddress(t *testing.T) {
 		}
 
 		t.Logf("domain %s address %s\n", c.domain, address)
+	}
+}
+
+func TestLoadAddressNotMatch(t *testing.T) {
+	for _, c := range []LoadCase{
+		LoadCase{
+			in:     "address=/www.baidu.tech/47.75.140.107",
+			domain: "wwww.baidu.tech",//not match
+		},
+		LoadCase{
+			in:     "address=/mydomain.tech/47.75.140.107",
+			domain: "wwwmydomain.tech",//not match
+		},
+	} {
+		p.loadline(c.in)
+
+		address := p.GetAddress(c.domain)
+		if len(address) > 0 {
+			t.Fatalf("got empty,domain=%s\n", c.domain)
+			return
+		}
 	}
 }

@@ -69,7 +69,7 @@ func (p *Policy) loadfile(file string) {
 		logs.Warn("open file:%s, fail: %v", file, err)
 		return
 	}
-
+	logs.Info("load config :%s", file)
 	br := bufio.NewReader(fp)
 	for {
 		bline, _, err := br.ReadLine()
@@ -99,12 +99,12 @@ func (p *Policy) loadline(line string) {
 	}
 
 	plugin := sp[0]
-	domain := fmt.Sprintf("*%s", sp[1]) //add wildcard
+	domain := fmt.Sprintf("*.%s", sp[1]) //add wildcard, baidu.com-->*.baidu.com, www.baidu.com will match this, but wwwbaidu.com not match
 
 	// plugin为script时，策略可能包含路径的/
 	policy := strings.Join(sp[2:], "/")
 
-	logs.Debug("plugin=%s, domain=%s, policy=%s\n", plugin, domain, policy)
+	logs.Debug("plugin:%s, domain:%s, policy:%s\n", plugin, domain, policy)
 	switch plugin {
 	case "server=":
 		ele, err := p.tree.FindDomain(domain)
@@ -154,7 +154,7 @@ func (p *Policy) loadline(line string) {
 }
 
 func (p *Policy) Exec(domain string, resp *dns.Msg) {
-	ele, err := p.tree.FindDomain(domain)
+	ele, err := p.FindDomain(domain)
 	if err != nil {
 		return
 	}
@@ -212,7 +212,7 @@ func (p *Policy) execCmd(cmd string, args []string) {
 }
 
 func (p *Policy) GetUpper(domain string) []string {
-	ele, err := p.tree.FindDomain(domain)
+	ele, err := p.FindDomain(domain)
 	if err != nil {
 		return nil
 	}
@@ -226,7 +226,7 @@ func (p *Policy) GetUpper(domain string) []string {
 }
 
 func (p *Policy) GetAddress(domain string) []string {
-	ele, err := p.tree.FindDomain(domain)
+	ele, err := p.FindDomain(domain)
 	if err != nil {
 		return nil
 	}
@@ -237,4 +237,8 @@ func (p *Policy) GetAddress(domain string) []string {
 	}
 
 	return []string{addr}
+}
+
+func (p *Policy) FindDomain(domain string) (interface{}, error) {	
+	return p.tree.FindDomain("."+domain)
 }

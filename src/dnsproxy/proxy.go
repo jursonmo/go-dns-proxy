@@ -12,7 +12,7 @@ import (
 
 var (
 	defaultAddr        = ":53"
-	defaultTimeout     = 5
+	defaultTimeout     = 3
 	defaultConcurrency = 10
 	defaultQueueSize   = defaultConcurrency * 5
 )
@@ -152,11 +152,13 @@ func (p *Proxy) handleQuery() {
 			domain := strings.ToLower(req.Question[0].Name)
 			//请求域名后面有加"."
 			//fmt.Printf("debug, domain:%s\n", domain)// "baidu.com."
+			//clear last char if is '.'
 			if domain[len(domain)-1] == '.' {
 				domain = domain[:len(domain)-1]
 			}
 			address := p.policy.GetAddress(domain)
 			if len(address) > 0 {
+				logs.Debug("GetAddress ok, domain:%s, address:%v", domain, address)
 				err = p.handleAddress(domain, conn, raddr, req, address)
 				if err == nil {
 					logs.Debug("%s => %s", domain, "buildin")
@@ -189,6 +191,7 @@ func (p *Proxy) handleQuery() {
 			if p.policy != nil {
 				pupper := p.policy.GetUpper(domain)
 				if len(pupper) > 0 {
+					logs.Debug("GetUpper ok, domain:%s, upper:%v", domain, pupper)
 					upper = pupper
 				}
 			}
