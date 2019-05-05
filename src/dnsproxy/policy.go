@@ -160,6 +160,9 @@ func (p *Policy) Exec(domain string, resp *dns.Msg) {
 	}
 
 	val := ele.(*policyValue)
+	if len(val.ipset) == 0 && val.script == ""{
+		return
+	}
 
 	ips := make([]string, 0)
 	for _, a := range resp.Answer {
@@ -184,12 +187,10 @@ func (p *Policy) Exec(domain string, resp *dns.Msg) {
 		}
 	}
 
-	if len(val.ipset) > 0 {
-		for _, setname := range val.ipset {
-			p.execIpset(ips, setname)
-		}
+	for _, setname := range val.ipset {
+		p.execIpset(ips, setname)
 	}
-
+	
 	if val.script != "" {
 		p.execScript(ips, val.script)
 	}
