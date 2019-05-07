@@ -17,5 +17,5 @@ ttl=300
 
 [log]
 max_day=3
-path="./console.log"
+path="./dnsproxy.log"
 level="debug"
