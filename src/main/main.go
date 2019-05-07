@@ -1,7 +1,7 @@
 package main
 
 import (
-	"dnsproxy"
+	"github.com/jursonmo/go-dns-proxy/dnsproxy"
 	"flag"
 	"fmt"
 )
